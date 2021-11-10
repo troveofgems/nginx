@@ -1,0 +1,43 @@
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo&display=swap');
+
+html {
+    min-height: 100vh;
+    min-width: 100vw;
+}
+
+body {
+    color: #f2f2f2;
+    background-color: #0d0d0d;
+    font-family: 'Mohave', sans-serif;
+    min-height: inherit;
+    min-width: inherit;
+}
+
+nav {
+    overflow: hidden;
+}
+
+.brand-stamp {
+    height: 75px;
+    padding: 1rem;
+}
+
+.logo-container {
+
+}
+
+.rotate-logo {
+    animation: rotation 8s infinite linear;
+    height: 300px;
+    width: 300px;
+}
+
+@keyframes rotation {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
