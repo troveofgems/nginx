@@ -1,0 +1,100 @@
+events {}
+
+http {
+  include mime.types;
+
+  server {
+    server_name <BASE_FQDN> <www.FQDN> <SERVER_IP>;
+
+    root <PATH TO STATIC SERVED ASSETS>; # Example: /sites/www
+
+    #######################################################################################################
+    # try_files Directive Example
+    #######################################################################################################
+    # try_files $uri img/uclogo.png /friendly_404;
+
+    #######################################################################################################
+    # NGINX Variables
+    #######################################################################################################
+    # NGINX Conditions (NEVER USE IN LOCATION BLOCKS!!!!!!)
+    #if ( $arg_apiKey != 1234  ) {
+    #  return 401 "You must provide an API Key To Continue Onto The Umbrella Corporate NGINX Configurational Location Blocks";
+    #}
+
+    # NGINX Built-In Variables
+    location /inspect-nginx {
+      return 200 "$host\n\t$uri\n\t\t$args";
+    }
+
+    # Custom Variables
+    set $weekend 'no';
+
+    if ( $date_local ~ 'Saturday|Sunday' ) {
+       set $weekend 'yes';
+    }
+
+    location /is_weekend {
+      return 200 $weekend;
+    }
+
+    #####################################################################################################
+    # NGINX Order-Of-Precedence Location Block Examples
+    #####################################################################################################
+
+    # 1 - Exact Match - This will match: /greet
+    location = /greet {
+      return 200 "Render from Exact Match = /greet Location Block";
+    }
+
+    # 2 - Preferential Match - Will take precedence over regex matches
+    location ^~ /Greet2 {
+      return 200 "Render from Preferential Match ^~ /greet Location Block";
+    }
+
+    # 3 - REGEX Match - This will match the provided regex (~ is case-sensitive ~* is case-insensitive)
+    location ~ /greet[0-9] {
+      return 200 "Render from REGEX Match ~ /greet[0-9] Location Block";
+    }
+
+    # 4 - Prefix Match - This will match: /greet*
+    location /greet {
+      return 200 "Render from Prefix Match /greet Location Block";
+    }
+
+    ###################################################################################################
+    # Rewrites & Redirects
+    ###################################################################################################
+    location /logo { # This is a redirect. Notice /logo is switched to /img/...
+      return 307 /img/favicon.jpg?apiKey=1234;
+    }
+
+    rewrite ^/user/(\w+) /welcome/$1 last;
+    rewrite ^/welcome/john /img/ucorpSpinner.png;
+
+    location /welcome {
+      return 200 "Welcome User";
+    }
+
+    location = /welcome/dooneese {
+      return 200 "Hey There Doon?? What's going on??";
+    }
+
+    ###################################################################################################
+    # Serve Custom 404 Error Page
+    ###################################################################################################
+
+    error_page 404 /saferoom.html;
+    location = /saferoom.html {
+      root /sites/demo/nginx/www;
+      internal;
+    }
+
+   ####################################################################################################
+   # Logging
+   ###################################################################################################
+   location /secure {
+     access_log /var/log/nginx/secure.access.log;
+     return 200 "Welcome to a safe-room";
+   }
+  }
+}

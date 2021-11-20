@@ -17,9 +17,29 @@ nav {
     overflow: hidden;
 }
 
+ul {
+    list-style-image: url('../img/ucorpBullet.png');
+    padding-inline-start: unset;
+}
+
+li {
+    margin: 0 0 1rem 0;
+    font-size: 1.5rem;
+    font-weight: lighter;
+}
+
+a {
+    color: white;
+    text-decoration: none;
+}
+
 .brand-stamp {
     height: 75px;
     padding: 1rem;
+}
+
+.companyLabel {
+    color: #0a58ca!important;
 }
 
 .logo-container {

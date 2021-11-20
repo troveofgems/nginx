@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" style="overflow-x: hidden;">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -7,7 +7,12 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>UCorp. Internal Services</title>
     <link rel="icon" type="image/x-icon" href="./img/favicon.jpg" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+            crossorigin="anonymous"
+    >
     <link type="text/css" href="./style/main.css" rel="stylesheet"/>
 </head>
 <body>
@@ -23,20 +28,108 @@
             <div class="container logo-container">
                 <img class="rotate-logo mt-3" src="./img/ucorpSpinner.png" alt="Umbrella Corp Logo Spinner" />
             </div>
+            <div class="container row mt-5">
+                <div class="col">
+                    <h3 style="text-align: left;">
+                        System Routes
+                    </h3>
+                    <ul style="text-align: left; margin-bottom: 4rem;">
+                        <li>
+                            <a href="/">Home</a>
+                        </li>
+                        <li>
+                            <a href="/inspect-nginx">Inspect NGINX</a>
+                        </li>
+                        <li>
+                            <a href="/is_weekend">NGINX - Is Weekend?</a>
+                        </li>
+                        <li>
+                            <a href="/greet">Exact Match - Greet</a>
+                        </li>
+                        <li>
+                            <a href="/Greet2">Preferential Match - Greet</a>
+                        </li>
+                        <li>
+                            <a href="/greet2">REGEX Match - Greet</a>
+                        </li>
+                        <li>
+                            <a href="/greet3">Prefix Match - Greet</a>
+                        </li>
+                        <li>
+                            <a href="/welcome">Server Welcome</a>
+                        </li>
+                        <li>
+                            <a href="/welcome/dooneese">Server Welcome To Specific User Dooneese</a>
+                        </li>
+                        <li>
+                            <a href="/logo">Redirect (307) To Logo</a>
+                        </li>
+                        <li>
+                            <a href="/welcome/random_user">Rewrite  - Any User</a>
+                        </li>
+                        <li>
+                            <a href="/welcome/john">Rewrite  - User John to Image Spinner</a>
+                        </li>
+                        <li>
+                            <a href="/secure">Logging - Secure</a>
+                        </li>
+                        <li>
+                            <a href="/someNonconfiguredRoute">Not Found Page (404)</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col">
+                    <h3>
+                        .conf Schematics
+                    </h3>
+                    <ul style="list-style: none;">
+                        <li>
+                            <button disabled>Basic Configuration</button>
+                        </li>
+                        <li>
+                            <button disabled>Performance</button>
+                        </li>
+                        <li>
+                            <button disabled>Security</button>
+                        </li>
+                        <li>
+                            <button disabled>Reverse Proxy & Load Balancing</button>
+                        </li>
+                        <li>
+                            <button disabled>U.I.S. Server Configuration File</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </main>
     <Footer style="text-align: center">
-        <div style="width: 50%; margin: 0 auto;">
+        <div style="width: 75%; margin: 0 auto;">
             <p>
                 The material on this page is purely for educational purposes and not meant to serve as anything other
-                than a Systems Administration concept of a custom hosted server (this one).
+                than a Systems Administration concept of a custom hosted NGINX configured server (this one).
             </p>
             <p>
-                The Resident Evil Franchise Is Owned By Capcom. You may find them here:
+                I, as well as this site, are in no way related to the Resident Evil Franchise which is owned by Capcom.
+                You may find them here:
                 <a href="https://www.capcom.com/" target="_blank" rel="noopener noreferrer">
-                    Capcom Co.,Ltd.
+                    <span class="companyLabel">Capcom Co.,Ltd.</span>
                 </a>
             </p>
+            <p>
+                This is a work of fiction and education. Any similarity to actual persons living or dead, or
+                actual events, or company owned material or logo look-alikes are purely coincidental.
+                I'm also a fan of zombie stomping.
+            </p>
+            <div class="year">
+                <p>
+                    <a href="https://github.com/troveofgems">
+                        <span class="companyLabel">TTOG</span>
+                    </a>
+                    - 2021
+                </p>
+                <p>v1.0.0</p>
+            </div>
         </div>
     </Footer>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
