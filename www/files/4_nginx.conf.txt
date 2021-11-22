@@ -1,0 +1,27 @@
+events {}
+
+http {
+
+  ############################################################
+  # Define the Load-Balancing Servers
+  ############################################################
+  upstream node_servers {
+    #ip_hash; #Enables Sticky Sessions, or IP Hashing
+    #least_conn; # Parse requests to the server with the most availability
+    server localhost:10001;
+    server localhost:10002;
+    server localhost:10003;
+  }
+
+  ############################################################
+  # Set the Proxied Server to the Upstream Servers
+  ############################################################
+  server {
+    listen 7777;
+
+    location / {
+      proxy_pass proxy_pass http://node_servers;
+    }
+  }
+
+}

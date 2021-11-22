@@ -38,6 +38,16 @@ a {
     padding: 1rem;
 }
 
+.clickme {
+    background-color: #EEEEEE;
+    padding: 8px 20px;
+    text-decoration:none;
+    font-weight:bold;
+    border-radius:5px;
+    color: #10a2ff;
+    cursor:pointer;
+}
+
 .companyLabel {
     color: #0a58ca!important;
 }

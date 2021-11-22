@@ -1,0 +1,24 @@
+events {}
+
+http {
+   include mime.types;
+
+   server {
+
+        listen 8888;
+
+        location / {
+            return 200 "Hello From NGINX";
+        }
+
+        location /nodeServer {
+            #add_header proxied nginx;
+            #proxy_set_header proxied nginx;
+            proxy_pass 'http://localhost:9999/';
+        }
+
+        location /nginxOrg {
+            proxy_pass 'https://nginx.org/';
+        }
+    }
+}

@@ -1,0 +1,35 @@
+events {}
+
+http {
+   include mime.types;
+
+   server {
+   ############################################################
+   # Localhost Server
+   ############################################################
+   listen 8888; # Server set to listen on localhost port 8888
+
+   ############################################################
+   # Sanity Check - Normal Route
+   ############################################################
+   location / {
+    return 200 "NGINX Sanity Check";
+   }
+
+   ############################################################
+   # Proxy Route To NodeJS Server
+   ############################################################
+   location /nodeServer {
+    #add_header proxied nginx;
+    #proxy_set_header proxied nginx;
+    proxy_pass 'http://localhost:9999/';
+   }
+
+   ############################################################
+   # Proxy Route To External Server
+   ############################################################
+   location /nginxOrg {
+     proxy_pass 'https://nginx.org/';
+   }
+    }
+}
