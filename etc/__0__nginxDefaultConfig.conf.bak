@@ -85,7 +85,7 @@ http {
 
     error_page 404 /saferoom.html;
     location = /saferoom.html {
-      root /sites/demo/nginx/www;
+      root <ABSOLUTE_PATH_TO_FILE>;
       internal;
     }
 

@@ -1,0 +1,237 @@
+############################################################
+# Hardening
+############################################################
+# Always Keep NGINX Software up-to-date.
+# Compare current version of nginx to changelogs for future security fixes.
+# Dont provide unnecessary information. Consider: server_tokens off; directive.
+# Disable Click-jacking. Consider: add_header X-Frame-Options "SAMEORIGIN";
+# Disable XSS Loads. Consider: add_header X-XSS-Protection "1; mode=block";
+# Remove any unused or dangerous NGINX modules. Consider: --without-http_autoindex_module for removal.
+
+user www-ttog;
+worker_processes auto;
+events {
+  worker_connections 1024;
+}
+
+http {
+  include mime.types;
+  access_log off; # Turn off writes to the access_log. Override at the locblock level.
+
+  ############################################################
+  # Redirect All HTTP Traffic Over HTTPS/2
+  ############################################################
+  server {
+   listen 80;
+   server_name troveofgems.tech www.troveofgems.tech;
+   return 301 https://$host$request_uri;
+  }
+
+  ############################################################
+  # Disable the SSL Protocol And Use TLS Instead
+  ############################################################
+  ssl_protocols TLSv1.3 TLSv1.2;
+
+  ############################################################
+  # Set Cipher Suites
+  ############################################################
+  ssl_prefer_server_ciphers on;
+  ssl_ciphers EECDH+AESGCM:EECDH+AES256:!MD5:!ADH:!AECDH;
+
+  ############################################################
+  # Security Headers [max-age=1year]
+  ############################################################
+  add_header Strict-Transport-Security "max-age=31536000" always;
+  add_header X-Frame-Options "SAMEORIGIN";
+  add_header X-XSS-Protection "1; mode=block"
+
+  ############################################################
+  # Compress Responses & Set Buffer Limits
+  ############################################################
+  gzip on;
+  gzip_comp_level 3;
+
+  # Apply Compression To
+  gzip_types text/css;
+  gzip_types text/javascript;
+  gzip_types image/jpeg;
+  gzip_types image/png;
+  gzip_types image/vnd.microsoft.icon;
+  gzip_types video/mp4;
+
+  # Buffer Size - POST Submissions
+  client_body_buffer_size 10k;
+  client_max_body_size 8;
+
+  # Buffer Size - Headers
+  client_header_buffer_size 1k;
+
+  # Client Request Timeouts
+  client_header_timeout 12; # Default 60 is excessive
+  client_body_timeout 12;
+
+  # Connection Keep-alive Timeout
+  keepalive_timeout 15;
+
+  # Client Response Acceptance Timeouts
+  send_timeout 10;
+
+  # Skip buffering for Static Files
+  sendfile on;
+
+  # Optimize sendfile Packets
+  tcp_nopush on;
+
+  ############################################################
+  # Rate Limiting
+  ############################################################
+  limit_req_zone $request_uri zone=troveOfGemsCache:<ZONE_SIZE> rate=1200r/m;
+  # I dont expect more than 20 requests per given second.
+
+  ############################################################
+  # Main Server Context
+  ############################################################
+  server {
+    server_name troveofgems.tech www.troveofgems.tech;
+
+    limit_req zone=troveOfGemsCache burst=5 nodelay; # Allow up to five burst connections ie. rate=1205r/m allowed
+    # nodelay serve allowed burst requests as quickly as possible but maintain the same time constraint
+
+    #################################################################
+    # TODO: Implement REDIS & FastCGI Caching
+    #################################################################
+
+    ########################################################################
+    # index.html Serve Location
+    ########################################################################
+    root /sites/www/demo/nginx;
+
+    ########################################################################
+    # try_files Directive Example
+    ########################################################################
+    # try_files $uri img/uclogo.png /friendly_404;
+
+    ########################################################################
+    # NGINX Variables
+    ########################################################################
+    # NGINX Built-In Variables
+    location /inspect-nginx {
+      return 200 "$host\n\t$uri\n\t\t$args";
+    }
+
+    # Custom Variables
+    set $weekend 'no';
+
+    if ( $date_local ~ 'Saturday|Sunday' ) {
+       set $weekend 'yes';
+    }
+
+    location /is_weekend {
+      return 200 "$weekend - $date_local";
+    }
+
+    ###########################################################################
+    # NGINX Order-Of-Precedence Location Block Examples
+    ###########################################################################
+
+    # 1 - Exact Match - This will match: /greet
+    location = /greet {
+      return 200 "Render from Exact Match = /greet Location Block";
+    }
+
+    # 2 - Preferential Match - Will take precedence over regex matches
+    location ^~ /Greet2 {
+      return 200 "Render from Preferential Match ^~ /greet Location Block";
+    }
+
+    # 3 - REGEX Match - This will match the provided regex (~ is case-sensitive ~* is case-insensitive)
+    location ~ /greet[0-9] {
+      return 200 "Render from REGEX Match ~ /greet[0-9] Location Block - Case Sensitive";
+    }
+
+    # 4 - Prefix Match - This will match: /greet*
+    location /greet {
+      return 200 "Render from Prefix Match /greet Location Block";
+    }
+
+    ################################################################################
+    # Set Cache Settings For Specific File Types When Specifically Requested
+    ################################################################################
+    location ~* \.(css|js|png|jpg)$ {
+      add_header Pragma public;
+      add_header Vary Accept-Encoding;
+      expires 1M; # Expires 1 month from now
+    }
+
+    ###############################################################################
+    # Rewrites & Redirects
+    ###############################################################################
+    location /logo { # This is a redirect. Notice /logo is switched to /img/...
+      return 307 /img/favicon.jpg;
+    }
+
+    rewrite ^/user/(\w+) /welcome/$1 last;
+    rewrite ^/welcome/john /img/ucorpSpinner.png;
+
+    location /welcome {
+      return 200 "Welcome User";
+    }
+
+    location = /welcome/dooneese {
+      return 200 "Hey There Doon?? What's going on??";
+    }
+
+    ############################################################
+    # NGINX Authentication Page
+    ############################################################
+    location /secureArea {
+      auth_basic "Secure Area Title";
+      auth_basic_user_file /etc/nginx/.htpasswd;
+      try_files $uri $uri/ =404;
+    }
+
+    ############################################################
+    # Proxy Route To External Server
+    ############################################################
+    location /nginxOrg {
+      proxy_pass 'https://nginx.org/';
+    }
+
+    ################################################################
+    # Serve Custom 404 Error Page
+    ################################################################
+    error_page 404 /saferoom.html;
+    location = /saferoom.html {
+      root /sites/www/demo/nginx;
+      internal;
+    }
+
+   #################################################################
+   # Logging
+   #################################################################
+   location /secure {
+     access_log /var/log/nginx/secure.access.log;
+     return 200 "Welcome to a safe-room";
+   }
+
+   #################################################################
+   # TODO: Implement Load-balancing
+   #################################################################
+
+   #################################################################
+   # SSL & HTTP/2
+   #################################################################
+   listen 443 ssl http2; # managed by Certbot & Administrator
+   ssl_certificate /etc/letsencrypt/live/troveofgems.tech/fullchain.pem; # managed by Certbot
+   ssl_certificate_key /etc/letsencrypt/live/troveofgems.tech/privkey.pem; # managed by Certbot
+   include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+   ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+   ###################################################################################################
+   # Server Push For Updating Cache
+   ###################################################################################################
+   location = /index.html {
+    http2_push /style/main.css; # Checking with nghttp -nys[a] https://troveofgems.tech/index.html, * indicator
+   }
+  }
+}
