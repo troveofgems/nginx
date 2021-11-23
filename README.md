@@ -1,5 +1,5 @@
 # NGINX Server - Vultr Hosted DEBIAN 10
-## Fictitious Label: Umbrella Internal Systems U.I.S.
+## Fictitious Label: U.E.S.
 [Application Demo](https://troveofgems.tech/)
 
 # Purpose
@@ -34,16 +34,19 @@ Test your file changes prior to deployment with => COMMAND:
 9. NGINX - Redirect 307 To Logo
 10. NGINX - Rewrite - Any User
     - Demonstrates NGINX Rewrite
-12. NGINX - Rewrite - User John To Image Spinner
+11. NGINX - Rewrite - User John To Image Spinner
     - Demonstrates NGINX Rewrite
-14. NGINX - Logging
+12. NGINX - Logging
     - Demonstrates NGINX access.log writes
-16. NGINX - Not Found (404)
+13. Proxy - NGINX Homepage
+    - Demonstrates using NGINX as an External Reverse Proxy
+14. NGINX - Not Found (404)
     - Demonstrates Serving A Custom 404 Page
 
 ## NGINX Conf Templates
 1. Basic Configuration
 2. Performance
 3. Security
-4. Reverse Proxy & Load Balancing
-5. U.I.S. Server Template
+4. Reverse Proxy
+5. Load Balancing
+6. U.E.S. Server Template
